@@ -10,16 +10,15 @@ class BaseModel:
     """This is the BaseModel for all the classes"""
 
     def __init__(self, *args, **kwargs):
-        """The initiaalizor of the class"""
+        """The initializer of the class"""
         if kwargs:
-            for key, value in kwargs.items():
-                if not key.startswith("__"):
-                    if key == "created_at":
-                        self.__dict__[key] = datetime.fromisoformat(value)
-                    elif key == "updated_at":
-                        self.__dict__[key] = datetime.fromisoformat(value)
+            for k, v in kwargs.items():
+                if not k.startswith("__"):
+                    if k == "created_at" or k == "updated_at":
+                        date_format = "%Y-%m-%dT%H:%M:%S.%f"
+                        self.__dict__[k] = datetime.strptime(v, date_format)
                     else:
-                        self.__dict__[key] = value
+                        self.__dict__[k] = v
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
@@ -28,7 +27,8 @@ class BaseModel:
 
     def __str__(self):
         """The string representation of the object format"""
-        print("[{} ({}) {}]".format(self.__class__.name__, self.id, self.__dict__))
+        print("[{} ({}) {}]"
+              .format(self.__class__.name__, self.id, self.__dict__))
 
     def save(self):
         """updates the attribute `updated_at` with the current datetime"""
