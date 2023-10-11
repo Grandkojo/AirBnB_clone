@@ -21,10 +21,11 @@ class TestBaseModel_Instantiation(unittest.TestCase):
 
         self.assertIsInstance(new, BaseModel)
         self.assertTrue(issubclass(type(new), BaseModel))
-        self.assertEqual(str(type(new)), "<class 'models.base_model.BaseModel'>")
+        self.assertEqual(str(type(new)),
+                         "<class 'models.base_model.BaseModel'>")
 
     def test_two_objects(self):
-        new1= BaseModel()
+        new1 = BaseModel()
         new2 = BaseModel(**new1.to_dict())
 
         self.assertDictEqual(new1.to_dict(), new2.to_dict())
