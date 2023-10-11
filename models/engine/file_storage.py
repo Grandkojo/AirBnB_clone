@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """This is the file storage engine"""
+import os
 
 
 class FileStorage:
@@ -18,7 +19,7 @@ class FileStorage:
     def new(self, obj):
         """creates an new obj with key <obj class name>.id"""
         if obj:
-            key = f"{obj.__class__.__name__}.{obj.id}"
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
             FileStorage.__objects[key] = obj
 
     def save(self):
@@ -35,9 +36,12 @@ class FileStorage:
     def reload(self):
         """Deserializes JSON files to objects"""
         import json
-        with open(FilesStorage.__file_path, "r", encoding="utf=8") as ofile:
-            json_string = ofile.read()
-            if len(json_string) > 0:
-                json_dictionary = json.JSONDECODER().decode(json_string)
-            for key, value in json_dictionary.items():
-                FileStorage.__objects[key] = value
+        if os.path.isfile(FileStorage.__file_path):
+            with open(FileStorage.__file_path, "r") as file:
+                json_string = file.read()
+                if len(json_string) > 0:
+                    json_dict = json.JSONDecoder().decode(json_string)
+                    for key, value in json_dict.items():
+                        name = key.split(".")
+                        FileStorage.__objects[k] = eval(
+                                "{}(**value)".format(name[0]))
