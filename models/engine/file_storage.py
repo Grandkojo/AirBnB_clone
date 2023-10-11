@@ -29,5 +29,15 @@ class FileStorage:
         for key, value in FileStorage.__objects.items():
             if key and value:
                 json_dictionary[key] = value.to_dict()
-        json_string = json.JSONENCODER().encode(json_dict)
+        json_string = json.JSONENCODER().encode(json_dictionary)
         sfile.write(json_string)
+
+    def reload(self):
+        """Deserializes JSON files to objects"""
+        import json
+        with open(FilesStorage.__file_path, "r", encoding="utf=8") as ofile:
+            json_string = ofile.read()
+            if len(json_string) > 0:
+                json_dictionary = json.JSONDECODER().decode(json_string)
+            for key, value in json_dictionary.items():
+                FileStorage.__objects[key] = value
