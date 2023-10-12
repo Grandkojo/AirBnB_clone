@@ -29,9 +29,9 @@ class HBNBCommand(cmd.Cmd):
             return
 
         line = line.split()
-        class_name == line[0]
+        class_name = line[0]
 
-        if class_name in models_list:
+        if class_name in self.models_list:
             new_instance = BaseModel()
             new_instance.save()
             print(new_instance.id)
