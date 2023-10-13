@@ -4,6 +4,12 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
+from models.state import State
+from models.amenity import Amenity
+from models.review import Review
+from models.place import Place
+from models.city import City
 import re
 
 
@@ -167,6 +173,14 @@ class HBNBCommand(cmd.Cmd):
             for k, v in eval(line[2]).items():
                 storage.update(key, k, v)
             storage.save()
+
+    def help_update(self):
+        """The update command help desk"""
+        print("Usage: update <class name> <id> <attribute name>",
+              "\"<attribute value>\"\n",
+              "Updates an instance based on the class name and id"
+              "by adding or updating attribute",
+              "(save changes to the JSON file)")
 
     def parse_line(self, line):
         res = re.match(r"^(.*?)===(.*)===(.*)$", line)

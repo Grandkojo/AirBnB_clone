@@ -37,6 +37,12 @@ class FileStorage:
         """Deserializes JSON files to objects"""
         import json
         from ..base_model import BaseModel
+        from ..user import User
+        from ..city import City
+        from ..state import State
+        from ..place import Place
+        from ..review import Review
+        from ..amenity import Amenity
         if os.path.isfile(FileStorage.__file_path):
             with open(FileStorage.__file_path, "r") as file:
                 json_string = file.read()

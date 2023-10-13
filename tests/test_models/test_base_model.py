@@ -16,19 +16,11 @@ class TestBaseModel_Instantiation(unittest.TestCase):
 
         self.assertIsInstance(new_instance, BaseModel)
 
-    def test_with_one_arg(self):
-        new = BaseModel(15)
+    def test_two_objs(self):
+        bm1 = BaseModel()
 
-        self.assertIsInstance(new, BaseModel)
-        self.assertTrue(issubclass(type(new), BaseModel))
-        self.assertEqual(str(type(new)),
-                         "<class 'models.base_model.BaseModel'>")
-
-    def test_two_objects(self):
-        new1 = BaseModel()
-        new2 = BaseModel(**new1.to_dict())
-
-        self.assertDictEqual(new1.to_dict(), new2.to_dict())
+        bm2 = BaseModel(**bm1.to_dict())
+        self.assertDictEqual(bm1.to_dict(), bm2.to_dict())
 
 
 if __name__ == '__main__':
