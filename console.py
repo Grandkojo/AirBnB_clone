@@ -125,34 +125,31 @@ class HBNBCommand(cmd.Cmd):
               "\nEx:$ all BaseModel or all\n")
 
     def do_update(self, line):
-        """The update function to update an instance"""
-        object_dictionary = storage.all()
+        """Updates an instance"""
+        objs_dict = storage.all()
         if not line:
             print("** class name missing **")
             return
-
         line = self.parse_line(line)
         if line[0] not in self.models_list:
-            print("** class doesn't exist**")
-
+            print("** class doesn't exist **")
+            return
         if len(line) <= 1:
             print("** instance id missing **")
             return
         key = ".".join(line[0:2])
-        if key not in object_dictionary.keys():
+        if key not in objs_dict.keys():
             print("** no instance found **")
             return
-
         if len(line) <= 2:
             print("** attribute name missing **")
-
+            return
         if len(line) <= 3:
             try:
                 type(eval(line[2])) != dict
             except NameError:
                 print("** value missing **")
                 return
-
         val = None
         list_string = []
         if len(line) >= 4:
@@ -164,7 +161,7 @@ class HBNBCommand(cmd.Cmd):
                 val = " ".join(list_string)
             else:
                 val = line[3]
-            storage.update(key, line[2], eval("{}".val))
+            storage.update(key, line[2], eval(val))
             storage.save()
         else:
             for k, v in eval(line[2]).items():
