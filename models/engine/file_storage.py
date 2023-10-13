@@ -36,6 +36,7 @@ class FileStorage:
     def reload(self):
         """Deserializes JSON files to objects"""
         import json
+        from ..base_model import BaseModel
         if os.path.isfile(FileStorage.__file_path):
             with open(FileStorage.__file_path, "r") as file:
                 json_string = file.read()
@@ -43,5 +44,21 @@ class FileStorage:
                     json_dict = json.JSONDecoder().decode(json_string)
                     for key, value in json_dict.items():
                         name = key.split(".")
-                        FileStorage.__objects[k] = eval(
+                        FileStorage.__objects[key] = eval(
                                 "{}(**value)".format(name[0]))
+
+    def delete(self, key):
+        """Deletes a key, value pair based on its key"""
+        if key:
+            for k in FileStorage.__objects.keys():
+                if k == key:
+                    del FileStorage.__objects[k]
+                    break
+
+    def update(self, key, attribute, value):
+        """Updates an objects"""
+        if key and attribute and value:
+            for k in FileStorage.__objects.keys():
+                if k == key:
+                    FileStorage.__objects[k].__dict__[attribute] = value
+                    break

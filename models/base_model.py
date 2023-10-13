@@ -27,8 +27,8 @@ class BaseModel:
 
     def __str__(self):
         """The string representation of the object format"""
-        print("[{} ({}) {}]"
-              .format(self.__class__.name__, self.id, self.__dict__))
+        return ("[{} ({}) {}]"
+              .format(self.__class__.__name__, self.id, self.__dict__))
 
     def save(self):
         """updates the attribute `updated_at` with the current datetime"""
