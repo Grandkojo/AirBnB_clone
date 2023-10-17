@@ -131,7 +131,7 @@ class HBNBCommand(cmd.Cmd):
               "\nEx:$ all BaseModel or all\n")
 
     def do_update(self, line):
-        """Updates an instance"""
+        """This is the update command parser"""
         objs_dict = storage.all()
         if not line:
             print("** class name missing **")
@@ -167,7 +167,7 @@ class HBNBCommand(cmd.Cmd):
                 val = " ".join(list_string)
             else:
                 val = line[3]
-            storage.update(key, line[2], eval(val))
+            storage.update(key, line[2], eval("{}").format(val))
             storage.save()
         else:
             for k, v in eval(line[2]).items():
@@ -178,14 +178,67 @@ class HBNBCommand(cmd.Cmd):
         """The update command help desk"""
         print("Usage: update <class name> <id> <attribute name>",
               "\"<attribute value>\"\n",
-              "Updates an instance based on the class name and id"
+              "Updates an instance based on the class name and id",
               "by adding or updating attribute",
-              "(save changes to the JSON file)")
+              "(save changes to the JSON file).\nEx:",
+              "$ update BaseModel 1234-1234-1234 email \"airbnb@mail.com\"\n")
+
+    def emptyline(self):
+        """this is the empty line parser"""
+        pass
+
+    def onecmd(self, line):
+        """overriding the internal onecmd function"""
+        rex = re.match(r'^(.*)\.(.*)\((.*)\)$', line)
+        args = list(rex.groups()) if rex else None
+        if args and len(args) > 0:
+            model = args[0]
+            ext = args[1]
+
+        if model in self.models_list:
+            if ext == "all" and not args[2]:
+                self.do_all(model)
+                return
+            elif ext == "count" and not args[2]:
+                print(len([k for k in storage.all().keys()
+                      if k.startswith(model)]))
+                return
+            elif ext == "show" and args[2] and args[2].startswith('""') \
+                        and args[2].endswith('"'):
+                id = args[2][1:-1]
+                fline = " ".join([model, id])
+                self.do_show(fline)
+                return
+            elif ext == "destroy" and args[2] and args[2].startswith('"') \
+                        and args[2].endswith('"'):
+                id = args[2][1:-1]
+                fline = " ".join([model, id])
+                self.do_destroy(fline)
+                return
+            elif ext == "update" and args[2]:
+                match = re.match(r"^(.*?), (\{.*\})$", args[2])
+                if match:
+                    res = match.groups()
+                    print(res)
+                    id = res[0][1:-1]
+                    fline = "===".join([model, id, res[1]])
+                    self.do_update(fline)
+                    return
+                match = re.match(r'^(.*?), (.*), (.*?)$', args[2])
+                if match:
+                    res = match.groups()
+                    print("update1")
+                    print(res)
+                    s = " ".join([model, res[0][1:-1], res[1][1:-1], res[2]])
+                    self.do_update(s)
+                    return
+        return super(HBNBCommand, self).onecmd(line)
 
     def parse_line(self, line):
-        res = re.match(r"^(.*?)===(.*)===(.*)$", line)
-        if res:
-            return list(res.groups())
+        """The parse_line function"""
+        match = re.match(r"^(.*?)===(.*)===(.*)$", line)
+        if match:
+            return list(match.groups())
         else:
             return line.split()
 
