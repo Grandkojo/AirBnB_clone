@@ -16,7 +16,8 @@ import re
 class HBNBCommand(cmd.Cmd):
     """The HBNB command"""
     prompt = '(hbnb) '
-    models_list = ["BaseModel"]
+    models_list = ["BaseModel", "User", "State", "City",
+                   "Amenity", "Place", "Review"]
 
     def do_quit(self, line):
         """Quit command to exit the program"""
@@ -186,53 +187,6 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """this is the empty line parser"""
         pass
-
-    def onecmd(self, line):
-        """overriding the internal onecmd function"""
-        rex = re.match(r'^(.*)\.(.*)\((.*)\)$', line)
-        args = list(rex.groups()) if rex else None
-        if args and len(args) > 0:
-            model = args[0]
-            ext = args[1]
-
-        if model in self.models_list:
-            if ext == "all" and not args[2]:
-                self.do_all(model)
-                return
-            elif ext == "count" and not args[2]:
-                print(len([k for k in storage.all().keys()
-                      if k.startswith(model)]))
-                return
-            elif ext == "show" and args[2] and args[2].startswith('""') \
-                        and args[2].endswith('"'):
-                id = args[2][1:-1]
-                fline = " ".join([model, id])
-                self.do_show(fline)
-                return
-            elif ext == "destroy" and args[2] and args[2].startswith('"') \
-                        and args[2].endswith('"'):
-                id = args[2][1:-1]
-                fline = " ".join([model, id])
-                self.do_destroy(fline)
-                return
-            elif ext == "update" and args[2]:
-                match = re.match(r"^(.*?), (\{.*\})$", args[2])
-                if match:
-                    res = match.groups()
-                    print(res)
-                    id = res[0][1:-1]
-                    fline = "===".join([model, id, res[1]])
-                    self.do_update(fline)
-                    return
-                match = re.match(r'^(.*?), (.*), (.*?)$', args[2])
-                if match:
-                    res = match.groups()
-                    print("update1")
-                    print(res)
-                    s = " ".join([model, res[0][1:-1], res[1][1:-1], res[2]])
-                    self.do_update(s)
-                    return
-        return super(HBNBCommand, self).onecmd(line)
 
     def parse_line(self, line):
         """The parse_line function"""
